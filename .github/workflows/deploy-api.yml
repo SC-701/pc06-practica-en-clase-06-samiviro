@@ -27,8 +27,8 @@ env:
 on:
   push:
     branches: [ "main" ]
-       paths-ignore:
-      - 'Semana 05-API y WEB/Vehiculo.API/BD/**'
+    paths-ignore:
+      - 'Vehiculo.API/BD/**'
   workflow_dispatch:
 
 permissions:
@@ -56,31 +56,31 @@ jobs:
 
       - name: Restore dependencies
         run: |
-          cd "Semana 05-API y WEB/Vehiculo.API"
-          dotnet restore "Abstracciones/Abstracciones.csproj"
-          dotnet restore "DA/DA.csproj"
-          dotnet restore "Flujo/Flujo.csproj"
-          dotnet restore "Reglas/Reglas.csproj"
-          dotnet restore "Servicios/Servicios.csproj"
-          dotnet restore "API/API.csproj"
+          cd "Vehiculo.API"
+          dotnet restore "Vehiculo.API/Abstracciones/Abstracciones.csproj"
+          dotnet restore "Vehiculo.API/DA/DA.csproj"
+          dotnet restore "Vehiculo.API/Flujo/Flujo.csproj"
+          dotnet restore "Vehiculo.API/Reglas/Reglas.csproj"
+          dotnet restore "Vehiculo.API/Servicios/Servicios.csproj"
+          dotnet restore "Vehiculo.API/API/API.csproj"
 
       - name: Build with dotnet (excluding BD project)
         run: |
-          cd "Semana 05-API y WEB/Vehiculo.API"
-          dotnet build "Abstracciones/Abstracciones.csproj" --configuration Release --no-restore
-          dotnet build "DA/DA.csproj" --configuration Release --no-restore
-          dotnet build "Flujo/Flujo.csproj" --configuration Release --no-restore
-          dotnet build "Reglas/Reglas.csproj" --configuration Release --no-restore
-          dotnet build "Servicios/Servicios.csproj" --configuration Release --no-restore
-          dotnet build "API/API.csproj" --configuration Release --no-restore
+          cd "Vehiculo.API"
+          dotnet build "Vehiculo.API/Abstracciones/Abstracciones.csproj" --configuration Release --no-restore
+          dotnet build "Vehiculo.API/DA/DA.csproj" --configuration Release --no-restore
+          dotnet build "Vehiculo.API/Flujo/Flujo.csproj" --configuration Release --no-restore
+          dotnet build "Vehiculo.API/Reglas/Reglas.csproj" --configuration Release --no-restore
+          dotnet build "Vehiculo.API/Servicios/Servicios.csproj" --configuration Release --no-restore
+          dotnet build "Vehiculo.API/API/API.csproj" --configuration Release --no-restore
 
       - name: Run tests (excluding BD project)
         run: |
-          cd "Semana 05-API y WEB/Vehiculo.API"
-          dotnet test "API/API.csproj" --no-restore --verbosity normal --configuration Release || echo "No tests found or test execution failed"
+          cd "Vehiculo.API"
+          dotnet test "Vehiculo.API/API" --no-restore --verbosity normal --configuration Release || echo "No tests found or test execution failed"
 
       - name: dotnet publish
-        run: dotnet publish "Semana 05-API y WEB/Vehiculo.API/API/API.csproj" -c Release -o ./publish --no-restore
+        run: dotnet publish "Vehiculo.API/API/API.csproj" -c Release -o ./publish --no-restore
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
@@ -108,6 +108,6 @@ jobs:
         uses: azure/webapps-deploy@v3
         with:
           app-name: ${{ env.AZURE_WEBAPP_NAME }}
-          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+          publish-profile: ${{ secrets.AZURE_APIAPP_PUBLISH_PROFILE }}
           package: .
           respect-funcignore: true
